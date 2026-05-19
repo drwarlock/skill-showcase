@@ -1,0 +1,26 @@
+{{- define "base-library.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "base-library.fullname" . }}
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+    {{- with .Values.application.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+    {{- with .Values.application.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.application.service.type }}
+  ports:
+    - port: {{ .Values.application.service.port }}
+      targetPort: {{ .Values.application.service.targetPort }}
+      protocol: {{ .Values.application.service.protocol }}
+      name: {{ .Values.application.service.name }}
+  selector:
+    {{- include "base-library.selectorLabels" . | nindent 4 }}
+# TODO: Add support for rollout preview services
+{{- end -}}

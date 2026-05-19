@@ -1,0 +1,5 @@
+apiVersion: v2
+name: base-library
+description: A Helm library for Kubernetes with base functions and templates.
+type: library
+version: 0.0.1

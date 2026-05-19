@@ -1,0 +1,20 @@
+{{- define "base-library.role" -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "base-library.fullname" . }}-role
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+    {{- with .Values.application.role.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+    {{- with .Values.application.role.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+{{- end -}}

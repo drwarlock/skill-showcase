@@ -1,0 +1,16 @@
+{{- define "base-library.configmap" -}}
+{{- if .Values.application.configmap -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "base-library.fullname" . }}-configmap
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+data:
+{{- toYaml .Values.application.configmap | nindent 2 }}
+{{- end -}}
+{{- end -}}
+    

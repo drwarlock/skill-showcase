@@ -1,0 +1,43 @@
+{{- define "base-library.trustManagerBundle" -}}
+{{- if .Values.trustManagerBundle.enabled }}
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: {{ include "base-library.fullname" . }}-trust-manager-bundle
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+    {{- with .Values.trustManagerBundle.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+    {{- with .Values.trustManagerBundle.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  sources:
+    - useDefaultCAs: {{ .Values.trustManagerBundle.useDefaultCAs }}
+    {{- if .Values.trustManagerBundle.sources }}
+    {{- toYaml .Values.trustManagerBundle.sources | nindent 4 }}
+    {{- end }}
+  target:
+    configMap:
+      key: {{ .Values.trustManagerBundle.target.configMap.key | default "ca-bundle.crt" }}
+    {{- if .Values.trustManagerBundle.target.additionalFormats }}
+    additionalFormats:  
+    {{- if .Values.trustManagerBundle.target.additionalFormats.jks.enabled }}
+      jks:
+        key: {{ .Values.trustManagerBundle.target.additionalFormats.jks.key | default "ca-bundle.jks" }}
+    {{- end }}
+    {{- if .Values.trustManagerBundle.target.additionalFormats.pkcs12.enabled }}
+      pkcs12:
+        key: {{ .Values.trustManagerBundle.target.additionalFormats.pkcs12.key | default "ca-bundle.p12" }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.trustManagerBundle.target.namespaceSelector.matchLabels }}
+    namespaceSelector:
+      matchLabels:
+        {{- toYaml .Values.trustManagerBundle.target.namespaceSelector.matchLabels | nindent 8 }}
+    {{- end }}
+{{- end }}
+{{- end -}}

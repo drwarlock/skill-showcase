@@ -1,0 +1,20 @@
+{{- define "base-library.pdb" -}}
+{{- if .Values.application.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "base-library.fullname" . }}-pdb
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.application.pdb.minAvailable }}
+  minAvailable: {{ .Values.application.pdb.minAvailable }}
+  {{- end }}
+  {{- if .Values.application.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.application.pdb.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "base-library.selectorLabels" . | nindent 6 }}
+{{- end -}}
+{{- end -}}

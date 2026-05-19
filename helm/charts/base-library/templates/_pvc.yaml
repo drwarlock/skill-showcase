@@ -1,0 +1,27 @@
+{{- define "base-library.pvc" -}}
+{{- if .Values.application.pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "base-library.fullname" . }}-pvc
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+    {{- with .Values.application.pvc.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+    {{- with .Values.application.pvc.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.application.pvc.accessMode | default "ReadWriteOnce" }}
+  {{- if .Values.application.pvc.storageClassName }}
+  storageClassName: {{ .Values.application.pvc.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.application.pvc.storage | default "1Gi" }}
+{{- end }}
+{{- end -}}

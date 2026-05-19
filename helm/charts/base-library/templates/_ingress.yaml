@@ -1,0 +1,30 @@
+{{- define "base-library.ingress" -}}
+{{- if .Values.application.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "base-library.fullname" . }}-ingress
+  labels:
+    {{- include "base-library.labels" . | nindent 4 }}
+    {{- with .Values.application.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "base-library.annotations" . | nindent 4 }}
+    {{- with .Values.application.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.application.ingress.className | default "alb" }}
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: {{ .Values.application.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ include "base-library.fullname" . }}
+                port:
+                  number: {{ .Values.application.ingress.port }}
+{{- end -}}
+{{- end -}}
