@@ -1,7 +1,7 @@
 {{/*
-- - - - - - - - - - - Functions that write values
+- - - - - - - - - - - Generic Functions that write values
 */}}
 
 {{/*
-- - - - - - - - - - - Functions that create chart sections
+- - - - - - - - - - - Generic Functions that create chart sections
 */}}
